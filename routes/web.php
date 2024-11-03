@@ -7,12 +7,17 @@ use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\ForgetPasswordManager;
 use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserPermissionController;
 
 // routes/web.php, api.php or any other central route files you have
 
 foreach (config('tenancy.central_domains') as $domain) {
     Route::domain($domain)->group(function () {
         Route::get('/', function () {
+            return view('welcome');
+        })->name('home');
+
+        Route::get('/dashboard', function () {
             return view('welcome');
         })->name('home');
 
@@ -31,14 +36,19 @@ foreach (config('tenancy.central_domains') as $domain) {
         Route::post('/registration', [AuthManager::class, 'registrationPost'])->name('registration.post');
         Route::get('/logout', [AuthManager::class, 'logout'])->name('logout');
 
-
         // Este grupo de rutas se realiza para agrupar las rutas que se muestran cuando ha iniciado sesion
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/profile', function () {
                 return "HI";
             })->name('profile');
 
-            Route::resource('tenants', TenantController::class)->except('show');
+            Route::resource('tenants', TenantController::class)->except('show','create')->middleware('can:create tenants');
+
+            Route::get('/tenants/create', [TenantController::class, 'create'])->name('tenants.create');
+
+            
+            Route::get('/users', [UserPermissionController::class, 'index'])->name('users.index');
+            Route::post('/users/{user}/assign-role', [UserPermissionController::class, 'assignRole'])->name('users.assign-role');
         });
 
         Route::get('/forget-password', [ForgetPasswordManager::class, "forgetPassword"])->name('forget.password');
