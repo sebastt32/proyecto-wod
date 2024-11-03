@@ -23,7 +23,7 @@
                                 @foreach ($tenants as $tenant)
                                     <tr>
                                         <td>{{ $tenant->id }}</td>
-                                        <td>{{ $tenant->domains->first()->domain ?? '' }}</td>
+                                        <td><a href={{ 'http://' . $tenant->domains->first()->domain }} target="_blank">{{ $tenant->domains->first()->domain ?? '' }}</a></td>
                                         <td>
                                             <form action="{{ route('tenants.destroy', $tenant) }}" method="POST">
                                                 @csrf

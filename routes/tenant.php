@@ -78,6 +78,10 @@ Route::middleware([
     Route::post('/registration', [AuthManager::class, 'registrationPost'])->middleware('recaptcha')->name('registration');
     Route::get('/logout', [AuthManager::class, 'logout'])->name('logout');
 
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('home');
+
 
     // Este grupo de rutas se realiza para agrupar las rutas que se muestran cuando ha iniciado sesion
     Route::middleware(['auth'])->group(function () {
