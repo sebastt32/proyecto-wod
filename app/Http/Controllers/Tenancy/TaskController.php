@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
+use App\Requests\TaskRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,13 +30,9 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'image_url' => 'required|image',
-        ]);
+        $data = $request->validated();
 
         $data['image_url'] = Storage::put('tasks', $request->file('image_url'));
 
